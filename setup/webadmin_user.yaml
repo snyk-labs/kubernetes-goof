@@ -1,0 +1,31 @@
+# Create a service account for the webadmin service 
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: webadmin
+---
+# VULNERABILITY 
+# Applies the allow_pod_read policy which allows the service
+# account to do whatever it wants in the affected namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: allow_pod_read
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs: ["create", "get", "watch", "list", "patch", "delete", "deletecollection", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: allow_pod_read_bind
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: allow_pod_read
+subjects:
+- kind: ServiceAccount
+  name: webadmin

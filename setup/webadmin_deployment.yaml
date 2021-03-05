@@ -1,0 +1,23 @@
+# Create a deployment for webadmin to use the service account
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webadmin
+  template:
+    metadata:
+      labels:
+        app: webadmin
+    spec:
+      serviceAccountName: webadmin
+      securityContext:
+        runAsUser: 999 # Must be non-0 if you use the PSP
+        fsGroup: 999 # As of 1.15 (I think) you need this set to access the servicetoken for the pod
+      containers:
+      - name: webadmin
+        image: mattjarvis/webadmin:latest
+        imagePullPolicy: Always

@@ -1,0 +1,29 @@
+# VULNERABILITY 
+# Expose the "endpoints" for the default namespace to all users.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: allow_endpoint_access
+  namespace: default
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  verbs:
+  - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: allow_endpoint_access_bind
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: allow_endpoint_access
+subjects:
+- kind: ServiceAccount
+  name: webadmin
+  namespace: secure
+

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: snyky
+spec:
+  containers:
+  - name: snyky
+    image: mattjarvis/snyky
+    securityContext:
+      runAsUser: 999
+    imagePullPolicy: Always

@@ -1,0 +1,21 @@
+# Simple example of deploying a privileged pod, with a host volume mount
+apiVersion: v1
+kind: Pod
+metadata:
+  name: snyky-priv
+  namespace: kube-system
+spec:
+  containers:
+  - name: snyky-priv
+    image: mattjarvis/snyky
+    volumeMounts:
+      - mountPath: /chroot
+        name: host
+    securityContext:
+      runAsUser: 999
+      privileged: true
+  volumes:
+  - name: host
+    hostPath:
+      path: /
+      type: Directory
