@@ -257,6 +257,8 @@ We've now discovered another service running, which also has port 5000 open.
 root@snyky:~# socat tcp-listen:5001,reuseaddr,fork tcp:10.244.1.9:5000 &
 ```
 
+SLIDE show traffic between pods
+
 Now this works because there isn't a network policy stopping us from traversing between the secure namespace and other namespaces in the cluster. This is another vulnerability.
 
 Back to our local console :
@@ -311,6 +313,8 @@ kubectl get pods -n kube-system
 kubectl get nodes
 ```
 
+SLIDE Add kube-system namespace
+
 Note that none of our other tokens let us do this, this is the kube-system namespace where the control plane for the entire cluster is running. We can also see the nodes, which is very useful to us, and we can find out where all of our kube-system pods are running. However ...
 
 ```console
@@ -330,6 +334,8 @@ Now we can run etcdclient and check if we have a connection to etcd
 
 `kubectl exec etcdclient -- etcdctl member list`
 
+SLIDE Show etcdclient pod connecting to etcd
+
 Etcd contains a lot of interesting information about the cluster, not least of which is secrets.
 
 `kubectl exec etcdclient -- etcdctl get '' --keys-only --from-key | grep secrets`
@@ -343,6 +349,8 @@ We have the token, what can it do ?
 `k auth can-i --list --token=$TOKEN`
 
 I now have a cluster-admin token, and can do whatever I want with the cluster.
+
+SLIDE - show cluster owned
 
 
 
