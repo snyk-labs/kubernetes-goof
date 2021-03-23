@@ -54,9 +54,11 @@ What we've done in this string is to curl the internal endpoint of the API serve
 
 This command succeeds, and in a real environment would give us the external address for the Kubernetes API server. Because we are running in Kind, it won't be this IP address, it will just be exposed on localhost with the same port. This is a vulnerability, and has been created by a too permissive policy for the service token. 
 
-SLIDE - Add external API server
+SLIDE 9 - Updated timelime
 
 Now we have a token we can configure kubectl to use that token against the external endpoint of the API server. 
+
+SLIDE 10 - connect to external API
 
 Run the helper script and configure kubectl locally in a new shell to use the token we just got. 
 
@@ -133,8 +135,9 @@ Here we can see we've got a lot more permissions. We can also show the output of
 
 So now we know we can do quite a few things in the secure namespace, and not a lot in default. This is a fairly common pattern, to give service accounts permissions in their own namespace.
 
-SLIDE - Add namespace
-SLIDE - show typical role and binding
+SLIDE 11 - Add namespaces
+SLIDE 12 - show typical role and binding
+SLIDE 13 - updated timeline to include role
 
 Let's try and get a shell on the compromised pod :
 
@@ -154,6 +157,8 @@ Test if we can create files
 `touch test`
 
 If we can do this, it potentially means we can download software or change configuration. I already know we have curl, so that's definitely possible. This is a vulnerability, caused by not setting `readonlyRootFilesystem=true`
+
+SLIDE 14 - readonly root
 
 Exit out of the container for the minute. 
 
@@ -192,8 +197,7 @@ Error from server (Forbidden): error when creating "demo_yamls/nonroot_priv.yaml
 
 Here we can see we've definitely got a PSP that's restricting us in that namespace.
 
-SLIDE - Add PSP
-SLIDE - show PSP, role etc.
+SLIDE 15 - Pod Security Policy
 
 So does that stop us from extending our exploit ? Let's try something else :
 
@@ -218,7 +222,7 @@ The problem here is that the PSP doesn't include :
 
 `allowPrivilegeEscalation=false`
 
-SLIDE - show PSP with correct privilege escalation setting
+SLIDE 16 - show PSP with correct privilege escalation setting
 
 Lots of places on the internet say this doesn't matter if you disallow privileged and root, but this isn't true. I now have a lot more things I can do in my container. I can install software AND I can poke around in the network. 
 
