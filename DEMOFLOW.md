@@ -136,7 +136,9 @@ Here we can see we've got a lot more permissions. We can also show the output of
 So now we know we can do quite a few things in the secure namespace, and not a lot in default. This is a fairly common pattern, to give service accounts permissions in their own namespace.
 
 SLIDE 11 - Add namespaces
+
 SLIDE 12 - show typical role and binding
+
 SLIDE 13 - updated timeline to include role
 
 Let's try and get a shell on the compromised pod :
@@ -224,6 +226,8 @@ The problem here is that the PSP doesn't include :
 
 SLIDE 16 - show PSP with correct privilege escalation setting
 
+SLIDE 17 - add PSP to timeline
+
 Lots of places on the internet say this doesn't matter if you disallow privileged and root, but this isn't true. I now have a lot more things I can do in my container. I can install software AND I can poke around in the network. 
 
 ```console
@@ -269,15 +273,19 @@ Nmap done: 256 IP addresses (254 hosts up) scanned in 2.60 seconds
 
 We've now discovered another service running, which also has port 5000 open. 
 
+SLIDE 18 - still don't know which namespace this new application is in
+
+SLIDE 19 - no network controls to timeline
+
 ### STAGE 3 - ESCAPE THE NAMESPACE AND THE PSP
 
 ```console
 root@snyky:~# socat tcp-listen:5001,reuseaddr,fork tcp:10.244.1.9:5000 &
 ```
 
-SLIDE show traffic between pods
+SLIDE 20 - connect via snyky pod to new pod
 
-Now this works because there isn't a network policy stopping us from traversing between the secure namespace and other namespaces in the cluster. This is another vulnerability.
+As we already saw this works because there isn't a network policy stopping us from traversing between the secure namespace and other namespaces in the cluster. 
 
 Back to our local console :
 
@@ -293,9 +301,13 @@ Now we can switch over the token in our kubeconfig and see what we can do with t
 
 `kubectl get pods`
 
-With this token we can now view the default namespace, so we've managed to escape the secure namespace. 
+With this token we can now view the default namespace, so we've managed to escape the secure namespace.
 
-SLIDE - Add new app running in default
+`k auth can-i --list --token=$TOKEN`
+
+We can also see that we have permissions in the default namespace
+
+SLIDE 21 - Add new app running in default
 
 ### STAGE 4 - GAIN CONTROL OF THE NODE
 
@@ -319,7 +331,7 @@ chroot /chroot
 ps ax
 ```
 
-SLIDE - show host node
+SLIDE 22 - show host node
 
 ### STAGE 5 - GAIN CONTROL OVER THE CLUSTER
 
@@ -331,7 +343,7 @@ kubectl get pods -n kube-system
 kubectl get nodes
 ```
 
-SLIDE Add kube-system namespace
+SLIDE 24 kube-system namespace
 
 Note that none of our other tokens let us do this, this is the kube-system namespace where the control plane for the entire cluster is running. We can also see the nodes, which is very useful to us, and we can find out where all of our kube-system pods are running. However ...
 
@@ -352,7 +364,7 @@ Now we can run etcdclient and check if we have a connection to etcd
 
 `kubectl exec etcdclient -- etcdctl member list`
 
-SLIDE Show etcdclient pod connecting to etcd
+SLIDE 25 Show etcdclient pod connecting to etcd
 
 Etcd contains a lot of interesting information about the cluster, not least of which is secrets.
 
@@ -368,7 +380,13 @@ We have the token, what can it do ?
 
 I now have a cluster-admin token, and can do whatever I want with the cluster.
 
-SLIDE - show cluster owned
+SLIDE 26 - End of our timeline of doom
+
+SLIDE 27 - Game over
+
+SLIDE 28 - how could we have prevented
+
+SLIDE 29 - standing on the shoulders of giants
 
 
 
