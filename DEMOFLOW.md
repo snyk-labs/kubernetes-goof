@@ -23,7 +23,7 @@ SLIDE 5 - Pod, in Kubernetes cluster, with internal API
 
 Let's also see what we can find out about the network at this point 
 
-[IP](http://localhost/webadmin?cmd=ip%a)
+[IP](http://localhost/webadmin?cmd=ip%20a)
 
 So now we know what IP range our container is in. 
 
