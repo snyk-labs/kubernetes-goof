@@ -5,7 +5,7 @@
 SLIDE 3
 Our starting point is that we've found a vulnerable web application on the internet with an RCE vulnerability. 
 
-At this point all we know is that we have an app that is exposed on port 5000, which we have connected to. 
+At this point all we know is that we have an app that is exposed on port 80, which we have connected to. 
 
 SLIDE 4
 
