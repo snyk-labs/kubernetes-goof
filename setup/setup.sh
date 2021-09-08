@@ -20,7 +20,7 @@ kubectl wait --for=condition=ready node --all
 kubectl apply -f ingress_ns_role.yaml
 
 # Configure and install the Ingress controller
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/legacy/deploy/static/provider/kind/deploy.yaml
 
 # Wait for the Ingress controller to become ready
 kubectl wait --namespace ingress-nginx \
