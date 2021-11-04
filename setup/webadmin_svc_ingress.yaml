@@ -10,17 +10,13 @@ spec:
   ports:
   - port: 5000
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: webadmin-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  rules:
-  - http:
-      paths:
-      - path: /webadmin
-        backend:
-          serviceName: webadmin
-          servicePort: 5000
+  defaultBackend:
+    service:
+      name: webadmin
+      port:
+        number: 5000
