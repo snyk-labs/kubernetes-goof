@@ -2,6 +2,10 @@
 
 # Create the cluster with PSP and Ingress support
 kind create cluster --config kind_psp_ingress.yaml
+<<<<<<< HEAD
+=======
+#eksctl create cluster --name snyk-sd -N 3
+>>>>>>> contour switch
 
 # Add the PSP's
 kubectl apply -f privileged_psp.yaml
@@ -24,6 +28,7 @@ kubectl apply -f ingress_ns_role.yaml
 #kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
 #kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/legacy/deploy/static/provider/kind/deploy.yaml
 kubectl apply -f https://projectcontour.io/quickstart/contour.yaml
+#kubectl patch daemonsets -n projectcontour envoy -p '{"spec":{"template":{"spec":{"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
 
 # Wait for the Ingress controller to become ready
 # kubectl wait --namespace ingress-nginx \
