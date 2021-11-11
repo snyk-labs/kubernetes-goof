@@ -20,7 +20,7 @@ kubectl wait --for=condition=ready node --all
 kubectl apply -f ingress_ns_role.yaml
 
 # Configure and install the Ingress controller
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/legacy/deploy/static/provider/kind/deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
 # Wait for the Ingress controller to become ready
 kubectl wait --namespace ingress-nginx \
@@ -40,8 +40,6 @@ kubectl apply -f webadmin_allow_role_to_see_endpoints.yaml
 # Deploy the vulnerable app into the secure namespace
 kubectl apply -f webadmin_deployment.yaml -n secure
 
-#FIXME DO WE NEED TO WAIT HERE ??
-
 # Create the Service and Ingress for the vulnerable app in the secure namespace
 kubectl apply -f webadmin_svc_ingress.yaml -n secure
 
@@ -54,5 +52,18 @@ kubectl apply -f webadmin_user.yaml
 # Deploy the vulnerable app into the default namespace
 kubectl apply -f webadmin_deployment.yaml
 
-
-
+# Cache all our required images so deployments are super quick
+kubectl apply -f ../demo_yamls/etcdclient.yaml
+while [[ $(kubectl get pods etcdclient -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]
+do 
+        echo "waiting for etcdclient pod"
+        sleep 5
+done
+kubectl delete pod etcdclient
+kubectl apply -f ../demo_yamls/nonroot_nonpriv.yaml
+while [[ $(kubectl get pods snyky -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]
+do 
+        echo "waiting for snyky pod"
+        sleep 5
+done
+kubectl delete pod snyky

@@ -189,7 +189,7 @@ We can see we get an Error here.
 
 So we know that something is blocking us deploying a container running as root, likely Pod Security Policy. Let's try and launch a privileged pod running as non-root :
 
-`kubectl apply -f demo_yamls/nonroot_priv.yaml`
+`kubectl apply -f demo_yamls/nonroot_priv.yaml -n secure`
 
 ```console
 % kubectl apply -f demo_yamls/nonroot_priv.yaml -n secure
@@ -202,7 +202,7 @@ SLIDE 15 - Pod Security Policy
 
 So does that stop us from extending our exploit ? Let's try something else :
 
-`kubectl apply -f demo_yamls/nonroot_nonpriv.yaml`
+`kubectl apply -f demo_yamls/nonroot_nonpriv.yaml -n secure`
 
 This one deploys, and so we also know that this cluster doesn't restrict me being able to launch images from external repositories. Here's another vulnerability.
 
@@ -344,7 +344,13 @@ kubectl get nodes
 
 SLIDE 24 kube-system namespace
 
-Note that none of our other tokens let us do this, this is the kube-system namespace where the control plane for the entire cluster is running. We can also see the nodes, which is very useful to us, and we can find out where all of our kube-system pods are running. However ...
+Note that none of our other tokens let us do this, this is the kube-system namespace where the control plane for the entire cluster is running. We can also see the nodes, which is very useful to us, and we can find out where all of our kube-system pods are running. 
+
+`kubectl describe pod etcd-kind-control-plane -n kube-system`
+
+Note where the etcd cluster is running
+
+However ...
 
 ```console
 kubectl run -i --tty busybox --image=busybox --restart=Never -- sh

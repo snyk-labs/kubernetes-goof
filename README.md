@@ -4,6 +4,8 @@ This document details the setup for the demo environment. In the git repository 
 
 ## Pre-requisites
 
+Tested on Docker 4.2.0 and kind 0.11.1
+
 ### [Kind](https://kind.sigs.k8s.io/) 
 
 `brew install kind`
