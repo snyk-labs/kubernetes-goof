@@ -2,10 +2,7 @@
 
 # Create the cluster with PSP and Ingress support
 kind create cluster --config kind_psp_ingress.yaml
-<<<<<<< HEAD
-=======
 #eksctl create cluster --name snyk-sd -N 3
->>>>>>> contour switch
 
 # Add the PSP's
 kubectl apply -f privileged_psp.yaml
