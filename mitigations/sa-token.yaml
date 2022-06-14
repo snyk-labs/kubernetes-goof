@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alpha
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alpha
+spec:
+  serviceAccountName: alpha
+  containers:
+  - name: alpha
+    image: ericsmalling/snyky:latest
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: beta
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: beta
+spec:
+  serviceAccountName: beta
+  containers:
+  - name: beta
+    image: ericsmalling/snyky:latest

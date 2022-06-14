@@ -6,7 +6,7 @@ metadata:
 spec:
   containers:
   - name: nonroot-priv
-    image: mattjarvis/snyky
+    image: ericsmalling/snyky
     volumeMounts:
       - mountPath: /chroot
         name: host
