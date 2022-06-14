@@ -19,5 +19,5 @@ spec:
         fsGroup: 999 # As of 1.15 (I think) you need this set to access the servicetoken for the pod
       containers:
       - name: webadmin
-        image: mattjarvis/webadmin:latest
+        image: ericsmalling/webadmin:latest
         imagePullPolicy: Always

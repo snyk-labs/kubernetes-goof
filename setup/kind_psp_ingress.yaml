@@ -24,9 +24,11 @@ nodes:
         node-labels: "ingress-ready=true"
   extraPortMappings:
   - containerPort: 80
+    listenAddress: "0.0.0.0"
     hostPort: 80
     protocol: TCP
   - containerPort: 443
+    listenAddress: "0.0.0.0"
     hostPort: 443
     protocol: TCP
 # two workers
