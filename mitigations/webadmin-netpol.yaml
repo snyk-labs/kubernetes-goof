@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-web-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: webadmin
+  policyTypes:
+  - Ingress
+  - Egress
+  egress: []
+  ingress:
+    - ports:
+        - port: 5000
+          protocol: TCP
+
+
