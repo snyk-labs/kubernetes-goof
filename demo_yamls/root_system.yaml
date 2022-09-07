@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: snyky-priv
-    image: mattjarvis/snyky
+    image: ericsmalling/snyky
     volumeMounts:
       - mountPath: /chroot
         name: host

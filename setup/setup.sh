@@ -3,6 +3,9 @@
 # Create the cluster with PSP and Ingress support
 kind create cluster --config kind_psp_ingress.yaml
 
+# Install Calcio CNI
+kubectl apply -f calico.yaml
+
 # Add the PSP's
 kubectl apply -f privileged_psp.yaml
 kubectl apply -f restricted_psp.yaml

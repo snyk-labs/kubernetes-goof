@@ -22,8 +22,6 @@ spec:
       value: /etc/kubernetes/pki/etcd/healthcheck-client.key
     - name: ETCDCTL_ENDPOINTS
       value: "https://127.0.0.1:2379"
-    - name: ETCDCTL_CLUSTER
-      value: "true"
     volumeMounts:
     - mountPath: /etc/kubernetes/pki/etcd
       name: etcd-certs
