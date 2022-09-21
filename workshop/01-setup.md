@@ -76,8 +76,7 @@ Client Version: version.Info{Major:"1", Minor:"24", GitVersion:"v1.24.3", GitCom
 Kustomize Version: v4.5.4
 The connection to the server localhost:8080 was refused - did you specify the right host or port?
 ```
-### git (optional)
-While not technically required, this workshop is distributed via a GitHub repository so having the **git** cli tool may make interacting easier.
+### git
 The **git** command line tool can be installed in a variety of ways.  For example, on Mac OS you may install it using Apple's developer tools or possibly via homebrew.
 If you do not already have it installed, follow the appropriate link on official installation page at https://git-scm.com/downloads
 
