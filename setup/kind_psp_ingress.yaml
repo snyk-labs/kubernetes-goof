@@ -30,6 +30,11 @@ nodes:
     listenAddress: "0.0.0.0"
     hostPort: 443
     protocol: TCP
+  - containerPort: 6443
+    listenAddress: "0.0.0.0"
+    hostPort: 6443
+    protocol: TCP
+    
 # one workers
 - role: worker
   image:  kindest/node:v1.23.6@sha256:b1fa224cc6c7ff32455e0b1fd9cbfd3d3bc87ecaa8fcb06961ed1afb3db0f9ae
