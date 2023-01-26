@@ -1,6 +1,7 @@
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 networking:
+  apiServerAddress: 0.0.0.0
   apiServerPort: 6443
   disableDefaultCNI: true
 # patch the generated kubeadm config with some extra settings
@@ -29,10 +30,6 @@ nodes:
   - containerPort: 443
     listenAddress: "0.0.0.0"
     hostPort: 443
-    protocol: TCP
-  - containerPort: 6443
-    listenAddress: "0.0.0.0"
-    hostPort: 6443
     protocol: TCP
     
 # one workers
