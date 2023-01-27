@@ -1,0 +1,10 @@
+apiVersion: kubeadm.k8s.io/v1alpha2
+kind: MasterConfiguration
+apiServerExtraArgs:
+  enable-admission-plugins: NodeRestriction,PodSecurityPolicy
+---
+apiVersion: kubeadm.k8s.io/v1alpha2
+kind: InitConfiguration
+  nodeRegistration:
+    kubeletExtraArgs:
+      node-labels: "ingress-ready=true"

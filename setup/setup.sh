@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Create the cluster with PSP and Ingress support
-kind create cluster --config kind_psp_ingress.yaml
+# Create the cluster with PSP and Ingress support unless "no-kind" passed in
+if [ ! "$1" == "no-kind" ]; then
+  kind create cluster --config kind_psp_ingress.yaml
+fi
 
 # Install Calcio CNI
 kubectl apply -f calico.yaml

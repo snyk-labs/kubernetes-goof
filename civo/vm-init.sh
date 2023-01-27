@@ -16,4 +16,6 @@ mv ./kind /usr/local/bin/kind
 cd ~ubuntu
 git clone https://github.com/snyk-labs/kubernetes-goof
 cd kubernetes-goof/setup
-su ubuntu ./setup.sh
+git checkout civo
+chown -R ubuntu:ubuntu ../../kubernetes-goof
+su ubuntu ./setup-kubeadm.sh
