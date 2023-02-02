@@ -14,7 +14,7 @@ kubeadmConfigPatches:
 nodes:
 # the control plane node config
 - role: control-plane
-  image:  kindest/node:v1.23.6@sha256:b1fa224cc6c7ff32455e0b1fd9cbfd3d3bc87ecaa8fcb06961ed1afb3db0f9ae
+  image:  kindest/node:v1.24.7@sha256:577c630ce8e509131eab1aea12c022190978dd2f745aac5eb1fe65c0807eb315
   kubeadmConfigPatches:
   - |
     kind: InitConfiguration
@@ -32,4 +32,4 @@ nodes:
     protocol: TCP
 # one workers
 - role: worker
-  image:  kindest/node:v1.23.6@sha256:b1fa224cc6c7ff32455e0b1fd9cbfd3d3bc87ecaa8fcb06961ed1afb3db0f9ae
+  image:  kindest/node:v1.24.7@sha256:577c630ce8e509131eab1aea12c022190978dd2f745aac5eb1fe65c0807eb315
