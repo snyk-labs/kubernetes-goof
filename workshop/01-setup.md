@@ -131,4 +131,8 @@ kind-worker          Ready    <none>                 38m   v1.23.6
 ```
 2. In a browser, open http://localhost/webadmin, you should get a page with the header, **Hello, Admin, What command should I run?** and an empty box with the word **NONE** above it.
 
+### Troubleshooting
+* If you are getting an nginx 404 Not Found error when trying to open http://localhost/webadmin, this usually is due to an ingress
+creation failure.  Try running `kubectl apply -f webadmin_svc_ingress.yaml -n secure` to resolve it.  (There appears to be a race condition in the setup routine that sometimes pops up.)
+
 ## [Next Step: Start exploiting!](02a-exploit.md)
