@@ -99,22 +99,9 @@ token into the file system of every Pod is problematic at-best. Let's fix that b
     command terminated with exit code 2
     ```
    #### Changes in Kubernetes v1.24
-    The eagle-eyed among you may have noted that [Kubernetes 1.24 Release Notes](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.24.md#urgent-upgrade-notes)
-    has defaulted the `LegacyServiceAccountTokenNoAutoGeneration` feature flag to be enabled. If this cluster were running on
-    1.24 or newer, wouldn't this solve the problem? Unfortunately, no. While the name of that feature _sounds_ like it might
-    end the auto generation of ServiceAccount tokens, in practice doesn't stop the automounted token file. What it does do
-    is stop the creation of Secret objects for the tokens. For example, after deploying the above on a 1.23 cluster:
-    ```shell
-    $ kubectl get secrets
-    NAME                   TYPE                                  DATA   AGE
-    alpha-token-2hv5v      kubernetes.io/service-account-token   3      48s
-    beta-token-445pd       kubernetes.io/service-account-token   3      48s
-    ```
-    ... but the same manifest deployed on a 1.24 cluster:
-    ```shell
-    $ kubectl get secrets
-    No resources found in default namespace.
-    ```
+    As we saw, [Kubernetes 1.24 Release Notes](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.24.md#urgent-upgrade-notes)
+    has defaulted the `LegacyServiceAccountTokenNoAutoGeneration` feature gate to be enabled. Since this cluster is running on
+    1.24 or newer, you might think that would this solve the problem but, unfortunately, it does not. While the name of that feature _sounds_ like it might end the auto generation of ServiceAccount tokens, in practice doesn't stop the automounted token file. What it does do is stop the creation of Secret objects for the tokens as we saw (and dealt with) in the final stage of the workshop.
    
 5. Clean up these resources with `kubectl delete -f sa-token.yaml`
 
@@ -231,6 +218,9 @@ DNS services in order to support service discovery, that is often done in the eg
 The presence of simple policy like this would have blocked both the initial api-server calls, and the nmap network
 exploration we ran. It also would have preventing anyone from accessing the internet from an exploited pod. This is a nice,
 extra line of defence in addition to any perimeter firewalling your infrastructure team may already have in place.
+
+5. Clean up
+If you are done playing with the cluster, you can clean everything up by simply deleting the kind cluster with the command: `kind delete cluster`.
 
 ## Next Step
 For the [final section](04-next-steps.md), we will look at further resources for enforcing these mitigations and other topics for further research.

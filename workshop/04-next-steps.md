@@ -2,18 +2,10 @@
 
 <!-- TOC -->
 * [Hands-on Hacking K8s Workshop | Section 4: Next Steps](#hands-on-hacking-k8s-workshop--section-4--next-steps)
-    * [ServiceAccount token auto-mount changes in v1.24](#serviceaccount-token-auto-mount-changes-in-v124)
     * [PSP removal in v1.25](#psp-removal-in-v125)
     * [Network Policy complexities](#network-policy-complexities)
     * [Community resources](#community-resources)
 <!-- TOC -->
-
-### ServiceAccount token auto-mount changes in v1.24
-In the v1.25 release of Kubernetes, there was a change to move the `LegacyServiceAccountTokenNoAutoGeneration` feature flag into beta
-which means that it is now set to `true` by default. This **does not** change the fact that serviceaccount tokens will be mounted as secrets in the filessystems of all new pods
-by default. It's actual effect is that there will not be a Kubernetes Secret created for these tokens going forward.
-It is still important to consider setting `automountServiceAccountToken: false` for all serviceaccounts and/or pods wherever
-possible in your deployments.
 
 ### PSP removal in v1.25
 The Pod Security Policy API was deprecated in v1.21 and has recently been removed from v1.25 forward. In it's absence,
