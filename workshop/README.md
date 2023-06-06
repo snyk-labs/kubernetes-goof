@@ -17,7 +17,7 @@ In other words, only deploy these to local/sandboxed clusters for the sole purpo
 Examples of places you should **NOT** deploy this to:
 * your developer servers
 * your QA environment
-* not your company's cloud account
+* your company's cloud account
 
 We take no responsibility for exploitation or damages caused by deploying anything from this
 repository (or the associated container images) to your personal or organization's infrastructure (private or public).
