@@ -4,7 +4,7 @@ This document details the setup for the demo environment. In the git repository 
 
 ## Pre-requisites
 
-Tested on Docker 4.2.0 and kind 0.11.1
+Tested on Docker Desktop 4.23.0 and kind 0.19.0
 
 ### [Kind](https://kind.sigs.k8s.io/) 
 
@@ -35,27 +35,11 @@ Tested on Docker 4.2.0 and kind 0.11.1
 
 ## Create Kind Cluster
 
-We are going to create a Kubernetes cluster using Kind, with some custom configuration to add support for Pod Security Policies and Ingress controllers.
+We are going to create a Kubernetes cluster using Kind, with some custom configuration to add support for Ingress controllers.
 
-`kind create cluster --config kind_psp_ingress.yaml`
+`kind create cluster --config kind_ingress.yaml`
 
 At this point the cluster will not actually deploy, as the PodSecurityPolicy admission controller is enabled without any policies in place. In this scenario all deployments are blocked so the control plane will not deploy. 
-
-We first need to add the two Pod Security Policies :
-
-`kubectl apply -f privileged_psp.yaml`
-
-`kubectl apply -f restricted_psp.yaml`
-
-Next we add the Cluster Roles :
-
-`kubectl apply -f cluster_roles.yaml`
-
-And now the Role Bindings :
-
-`kubectl apply -f role_bindings.yaml`
-
-Now we have the appropriate policies, roles and bindings for the control plane, we will see the control plane pods start to deploy. Wait until they are all deployed, at which point the nodes will be in ready state.
 
 When it has completed you should expect to see something like :
 
@@ -82,7 +66,7 @@ kind-control-plane   Ready    master   3m47s   v1.19.1
 kind-worker          Ready    <none>   3m19s   v1.19.1
 ```
 
-Now we need to set up the Ingress controller. First we're going to need to give the ingress controller access to the privileged Pod Security Policy within its own namespace :
+Now we need to set up the Ingress controller within its own namespace :
 
 `kubectl apply -f ingress_ns_role.yaml`
 

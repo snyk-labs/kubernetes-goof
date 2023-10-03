@@ -1,5 +1,7 @@
 # DEMO FLOW
 
+# TODO: Update this to reflect the new demo flow as per the workshop steps
+
 ### STAGE 1 - COMPROMISE A POD
 
 SLIDE 3
