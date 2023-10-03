@@ -7,14 +7,14 @@ kind create cluster --config kind_psp_ingress.yaml
 kubectl apply -f calico.yaml
 
 # Add the PSP's
-kubectl apply -f privileged_psp.yaml
-kubectl apply -f restricted_psp.yaml
+#kubectl apply -f privileged_psp.yaml
+#kubectl apply -f restricted_psp.yaml
 
 # Add the Cluster Roles
-kubectl apply -f cluster_roles.yaml
+#kubectl apply -f cluster_roles.yaml
 
 # Add the Role Bindings
-kubectl apply -f role_bindings.yaml
+#kubectl apply -f role_bindings.yaml
 
 # Wait for the nodes to become ready
 kubectl wait --for=condition=ready node --all
