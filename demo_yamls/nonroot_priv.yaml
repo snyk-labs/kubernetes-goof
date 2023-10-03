@@ -4,7 +4,7 @@ kind: Pod
 metadata:
   name: nonroot-priv
 spec:
-  nodeName: kind-control-plane
+#  nodeName: kind-control-plane
   containers:
   - name: nonroot-priv
     image: ericsmalling/snyky:23.0
