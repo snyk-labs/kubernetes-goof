@@ -3,7 +3,7 @@
 # 2. docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $TAG .
 # Details: https://cloudolife.com/2022/03/05/Infrastructure-as-Code-IaC/Container/Docker/Docker-buildx-support-multiple-architectures-images/
 #TODO: add back etcdctl, kubectl, krew and it's plugins, amicontained, ConMachi
-FROM ubuntu:latest
+FROM ubuntu:24.10
 
 RUN apt-get update \
     && apt-get install -yq nmap sudo curl socat iputils-ping vim bash dnsutils apt-file net-tools nmap stow tmux git-core sudo util-linux \
