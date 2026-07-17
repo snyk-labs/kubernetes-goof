@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:26.04
 LABEL maintainer="mattj"
 
 EXPOSE 8080
